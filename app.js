@@ -38,23 +38,23 @@ app.use((error, req, res, next) => {
 // database connection and listen
 const dbURL = `mongodb+srv://${process.env.MONGODB_USER_NAME}:${process.env.MONGODB_Password}@cluster0.bp7n4vz.mongodb.net/messenger`;
 mongoose.connect(dbURL)
-.then(() => {
-    const server = app.listen(8080);
-    const socketController = require('./socket');
-    socketController.init(server);
-    const io = socketController.getIO();
-    io.on('connection', socket => {
-        // save user id and socket id
-        socketController.saveUserSocket(socket.handshake.query.userId, socket.id);
+    .then(() => {
+        const server = app.listen(8080);
+        const socketController = require('./socket');
+        socketController.init(server);
+        const io = socketController.getIO();
+        io.on('connection', socket => {
+            // save user id and socket id
+            socketController.saveUserSocket(socket.handshake.query.userId, socket.id);
 
-        socket.on('disconnect', () => {
-            console.log('client Disconnect');
-            // delete user id and socket id
-            socketController.deleteUserSocket(socket.handshake.query.userId);
-        })
-    });
+            socket.on('disconnect', () => {
+                console.log('client Disconnect');
+                // delete user id and socket id
+                socketController.deleteUserSocket(socket.handshake.query.userId);
+            })
+        });
 
-})
-.catch((err) => {
-    console.log(err);
-})
+    })
+    .catch((err) => {
+        console.log(err);
+    })

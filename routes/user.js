@@ -9,7 +9,6 @@ const isAuth = require('../middleware/is-auth');
 
 // friends, search
 
-
 router.get('/friends', isAuth, userController.getFriends);
 
 router.get('/search', isAuth, userController.getUsers);

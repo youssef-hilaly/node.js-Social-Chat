@@ -6,7 +6,7 @@ exports.init = (httpServer) => {
 }
 
 exports.getIO = () => {
-    if(!io){
+    if (!io) {
         throw new Error('Socket.io not initialized!');
     }
     return io;
@@ -14,13 +14,23 @@ exports.getIO = () => {
 
 // save user id and socket id
 const users = new Map();
-exports.saveUserSocket = (userId, socketId) => {
-    // if(users.has(userId)){
-    //     users.set(userId, [...users.get(userId), socketId]);
-    // }else
-    // {
-        users.set(userId, [socketId]);
-    // }
+exports.saveUserSocket = async (userId, socketId) => {
+    if (users.has(userId)) {
+        const socketId = users.get(userId);
+
+        const oldSocket = io.sockets.sockets.get(socketId);
+        if (oldSocket) {
+            await oldSocket.disconnect(true);
+        }
+    }
+    users.set(userId, socketId);
+
+    //// number of connected users
+    //console.log(io.engine.clientsCount);
+
+    //// get all connected socket ids
+    //let keys =[ ...io.sockets.sockets.keys() ];
+    //console.log('users', keys);
 }
 
 // get socket id by user id

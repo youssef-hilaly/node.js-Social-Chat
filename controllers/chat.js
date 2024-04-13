@@ -45,22 +45,15 @@ exports.postMessage = async (req, res, next) => {
 
         await chatRoom.save();
 
-        const friendSocketIds = io.getSocketByUserId(friendId);
+        const friendSocketId = io.getSocketByUserId(friendId);
 
-        console.log(friendId)
-        console.log(io.getAllUsers());
-
-
-        if (friendSocketIds) {
+        if (friendSocketId) {
             let message = chatRoom.messages[chatRoom.messages.length - 1];
             const messageToEmit = {
                 ...message._doc,
                 action: 'newMessage'
             }
-            friendSocketIds.forEach(socketId => {
-                console.log('emit to: ',socketId);
-                io.getIO().to(socketId).emit('message', messageToEmit);
-            });
+            io.getIO().to(friendSocketId).emit('message', messageToEmit);
         }
 
         res.status(200).json({

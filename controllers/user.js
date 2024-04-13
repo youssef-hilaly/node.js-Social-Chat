@@ -9,7 +9,7 @@ exports.getFriends = async (req, res, next) => {
 
     const friendsIds = user.friends;
 
-    const friends = await User.find({_id: {$in: friendsIds}}).select('_id name email');
+    const friends = await User.find({ _id: { $in: friendsIds } }).select('_id name email');
 
     res.status(200).json({
         friends: friends
@@ -19,14 +19,14 @@ exports.getFriends = async (req, res, next) => {
 exports.getUsers = async (req, res, next) => {
     const searchTerm = req.body.searchTerm;
 
-    if(!friendId){
+    if (!friendId) {
         const error = new Error('User Name is missing');
         error.statusCode = 400;
         throw error;
     }
 
-    const users = await users.find({name: {$regex: '.*' + searchTerm + '.*'}}).limit(10);
-    
+    const users = await users.find({ name: { $regex: '.*' + searchTerm + '.*' } }).limit(10);
+
     res.status(200).json({
         users: users
     });
